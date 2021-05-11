@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { throttle } from 'lodash';
 import { Box, Typography } from '@material-ui/core';
 
 const Scrolling = props => {
