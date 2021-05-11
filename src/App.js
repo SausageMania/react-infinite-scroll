@@ -149,6 +149,8 @@ const App = () => {
                     component={Paper}
                     elevation={15}
                     style={{ opacity: (screenHeight / 3 - position) / 300 }}
+                    position="sticky"
+                    top="calc(50vh - 250px)"
                 >
                     <div ref={firstScroll} />
                     <LinearProgress ref={loadingUp} style={{ opacity: 0 }} />
@@ -205,7 +207,13 @@ const App = () => {
                     />
                 </Box>
             </Box>
-            <Box width="100%" height="100vh" display="flex" justifyContent="center">
+            <Box
+                width="100%"
+                height="100vh"
+                display="flex"
+                justifyContent="center"
+                style={{ opacity: (position - screenHeight / 1.5) / 300, backgroundColor: 'black' }}
+            >
                 <Scrolling position={position} screenHeight={screenHeight} />
             </Box>
         </React.Fragment>
