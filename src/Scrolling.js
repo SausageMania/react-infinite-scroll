@@ -7,7 +7,7 @@ const Scrolling = () => {
     return (
         <Box display="flex" alignItems="center">
             <Typography style={{ fontSize: '50px', fontWeight: 600, color: 'white' }}>
-                Hello!
+                Parallax Scrolling!
             </Typography>
         </Box>
     );

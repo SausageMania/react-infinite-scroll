@@ -141,6 +141,7 @@ const App = () => {
                     <Typography style={{ fontSize: '30px', fontWeight: 600 }}>
                         Infinite Scroll
                     </Typography>
+                    <Typography style={{ float: 'right' }}>with Sticky</Typography>
                 </Box>
                 <Box
                     width="350px"
@@ -148,7 +149,7 @@ const App = () => {
                     overflow="auto"
                     component={Paper}
                     elevation={15}
-                    style={{ opacity: (screenHeight / 3 - position) / 300 }}
+                    style={{ opacity: (screenHeight / 3 - position) / (screenHeight / 3) }}
                     position="sticky"
                     top="calc(50vh - 250px)"
                 >
@@ -212,7 +213,10 @@ const App = () => {
                 height="100vh"
                 display="flex"
                 justifyContent="center"
-                style={{ opacity: (position - screenHeight / 1.5) / 300, backgroundColor: 'black' }}
+                style={{
+                    opacity: (position - screenHeight / 1.5) / (screenHeight / 3),
+                    backgroundColor: 'black',
+                }}
             >
                 <Scrolling position={position} screenHeight={screenHeight} />
             </Box>
