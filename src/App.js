@@ -149,7 +149,7 @@ const App = () => {
                     overflow="auto"
                     component={Paper}
                     elevation={15}
-                    style={{ opacity: (screenHeight / 3 - position) / (screenHeight / 3) }}
+                    style={{ opacity: (screenHeight / 1.5 - position) / (screenHeight / 3) }}
                     position="sticky"
                     top="calc(50vh - 250px)"
                 >
