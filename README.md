@@ -10,7 +10,7 @@
 서칭 후 IntersectionObserver를 알게 되어 사용함. (해당 element가 화면에 나왔을 때 event 발생)
 
 ```javascript
-useEffect(() => {
+    useEffect(() => {
         const upObserver = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
@@ -38,7 +38,7 @@ window.addEventListener를 사용하여 scroll시 위치를 가져오게 하였�
 따라서 throttle을 이용하여 렌더링 갯수를 조절할 필요가 있음.  
 
 ```javascript
-const onScroll = () => {
+    const onScroll = () => {
         setPosition(window.scrollY);
     };
 
