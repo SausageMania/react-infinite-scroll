@@ -1,4 +1,4 @@
-# react-infinite-scroll
+# react-infinite-scroll & Parallax Scroll
 
 ## 1. 구현한 내용
 최하단으로 스크롤 했을 때 0.5초 로딩(setTimeout 500ms로 로딩처럼 구현) 후 데이터 concat.  
