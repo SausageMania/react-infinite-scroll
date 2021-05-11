@@ -10,6 +10,7 @@ import {
     LinearProgress,
     Typography,
 } from '@material-ui/core';
+import Scrolling from './Scrolling';
 
 const downData = [
     { name: 'test', age: '24' },
@@ -49,6 +50,28 @@ const App = () => {
 
     const upSavePoint = useRef(null);
     const downSavePoint = useRef(null);
+
+    const [position, setPosition] = useState(0);
+    const screenHeight = window.innerHeight;
+
+    const onScroll = () => {
+        setPosition(window.scrollY);
+    };
+
+    useEffect(() => {
+        // window.addEventListener(
+        //     'scroll',
+        //     throttle(() => {
+        //         onScroll();
+        //     }, 100),
+        // );
+
+        window.addEventListener('scroll', onScroll);
+
+        return () => {
+            window.removeEventListener('scroll', onScroll);
+        };
+    }, []);
 
     useEffect(() => {
         const downObserver = new IntersectionObserver(
@@ -104,8 +127,6 @@ const App = () => {
         }
     }, [upScroll]);
 
-    console.log(rowList);
-
     return (
         <React.Fragment>
             <Box
@@ -121,7 +142,14 @@ const App = () => {
                         Infinite Scroll
                     </Typography>
                 </Box>
-                <Box width="350px" height="500px" overflow="auto" component={Paper} elevation={15}>
+                <Box
+                    width="350px"
+                    height="500px"
+                    overflow="auto"
+                    component={Paper}
+                    elevation={15}
+                    style={{ opacity: (screenHeight / 3 - position) / 300 }}
+                >
                     <div ref={firstScroll} />
                     <LinearProgress ref={loadingUp} style={{ opacity: 0 }} />
                     <Table stickyHeader>
@@ -176,6 +204,9 @@ const App = () => {
                         style={{ opacity: 0 }}
                     />
                 </Box>
+            </Box>
+            <Box width="100%" height="100vh" display="flex" justifyContent="center">
+                <Scrolling position={position} screenHeight={screenHeight} />
             </Box>
         </React.Fragment>
     );
