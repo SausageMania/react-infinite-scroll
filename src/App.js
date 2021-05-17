@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
     Box,
     Table,
@@ -13,19 +13,20 @@ import {
 import Scrolling from './Scrolling';
 // eslint-disable-next-line no-unused-vars
 import { throttle } from 'lodash';
+import axios from 'axios';
 
-const downData = [
-    { name: 'downTest0', age: '24' },
-    { name: 'downTest1', age: '25' },
-    { name: 'downTest2', age: '26' },
-    { name: 'downTest3', age: '27' },
-    { name: 'downTest4', age: '28' },
-    { name: 'downTest5', age: '29' },
-    { name: 'downTest6', age: '30' },
-    { name: 'downTest7', age: '31' },
-    { name: 'downTest8', age: '32' },
-    { name: 'downTest9', age: '33' },
-];
+// const downData = [
+//     { name: 'downTest0', age: '24' },
+//     { name: 'downTest1', age: '25' },
+//     { name: 'downTest2', age: '26' },
+//     { name: 'downTest3', age: '27' },
+//     { name: 'downTest4', age: '28' },
+//     { name: 'downTest5', age: '29' },
+//     { name: 'downTest6', age: '30' },
+//     { name: 'downTest7', age: '31' },
+//     { name: 'downTest8', age: '32' },
+//     { name: 'downTest9', age: '33' },
+// ];
 
 const upData = [
     { name: 'upTest0', age: '50' },
@@ -44,6 +45,8 @@ const App = () => {
     const [rowList, setRowList] = useState([]);
     const [active, setActive] = useState(false);
     const [upScroll, setUpScroll] = useState(false); //최상단 scroll 감지 스위치
+    const [page, setPage] = useState(5);
+    const [lastPage, setLastPage] = useState(false);
 
     const firstScroll = useRef();
     const lastScroll = useRef();
@@ -60,12 +63,27 @@ const App = () => {
         setPosition(window.scrollY);
     };
 
+    const fetchAPI = useCallback(async () => {
+        try {
+            const response = await axios.get(
+                `https://60a1cf67745cd7001757576b.mockapi.io/api/userdata?page=${page}&limit=10`,
+            );
+
+            if (page === 10) setLastPage(true);
+            else setLastPage(false);
+
+            setRowList(rowList => rowList.concat(response.data));
+        } catch (error) {
+            console.log(error);
+        }
+    }, [page]);
+
     useEffect(() => {
         window.addEventListener(
             'scroll',
             throttle(() => {
                 onScroll();
-            }, 100),
+            }, 150),
         );
 
         window.addEventListener('scroll', onScroll);
@@ -78,17 +96,7 @@ const App = () => {
     useEffect(() => {
         const downObserver = new IntersectionObserver(
             ([entry]) => {
-                if (entry.isIntersecting && active) {
-                    lastScroll.current.style.opacity = '1';
-                    loadingDown.current.style.opacity = '1';
-                    lastScroll.current.style.transition = 'all 0.5s';
-                    loadingDown.current.style.transition = 'all 0.5s';
-                    setTimeout(() => {
-                        lastScroll.current.style.opacity = '0';
-                        loadingDown.current.style.opacity = '0';
-                        setRowList(rowList => rowList.concat(downData));
-                    }, 1000);
-                }
+                if (entry.isIntersecting && active) setPage(page => (page < 10 ? page + 1 : page));
             },
             { threshold: 1 },
         );
@@ -96,6 +104,23 @@ const App = () => {
 
         return () => downObserver.disconnect();
     }, [active]);
+
+    useEffect(() => {
+        if (!lastPage) {
+            loadingDown.current.style.opacity = '1';
+            loadingDown.current.style.transition = 'all 0.5s';
+        }
+        lastScroll.current.style.opacity = '1';
+        lastScroll.current.style.transition = 'all 0.5s';
+
+        setTimeout(() => {
+            if (!lastPage) {
+                loadingDown.current.style.opacity = '0';
+                lastScroll.current.style.opacity = '0';
+                fetchAPI();
+            }
+        }, 1000);
+    }, [fetchAPI, page, lastPage]);
 
     useEffect(() => {
         const upObserver = new IntersectionObserver(
@@ -191,6 +216,7 @@ const App = () => {
                                     <TableCell align="center">{data.age}</TableCell>
                                 </TableRow>
                             ))}
+                            {}
                             <TableRow>
                                 <TableCell
                                     colSpan={2}
@@ -198,16 +224,18 @@ const App = () => {
                                     align="center"
                                     style={{ opacity: 0 }}
                                 >
-                                    불러오는 중...
+                                    {lastPage ? '마지막 데이터입니다.' : '불러오는 중...'}
                                 </TableCell>
                             </TableRow>
                         </TableBody>
                     </Table>
-                    <LinearProgress
-                        variant="indeterminate"
-                        ref={loadingDown}
-                        style={{ opacity: 0 }}
-                    />
+                    {!lastPage && (
+                        <LinearProgress
+                            variant="indeterminate"
+                            ref={loadingDown}
+                            style={{ opacity: 0 }}
+                        />
+                    )}
                 </Box>
             </Box>
             <Box

@@ -7,9 +7,9 @@ const Scrolling = props => {
 
     useEffect(() => {
         if (position - screenHeight / 1.5 < 0) {
-            setTextSize('100px');
+            setTextSize('50px');
         } else {
-            const dynamicSize = ((position - screenHeight / 1.5) / (screenHeight / 1.5)) * 50 + 50;
+            const dynamicSize = ((position - screenHeight / 1.5) / (screenHeight / 3)) * 50 + 50;
             setTextSize(dynamicSize + 'px');
         }
     }, [position, screenHeight]);
